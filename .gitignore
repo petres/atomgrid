@@ -55,3 +55,9 @@ docs/_build/
 
 # PyBuilder
 target/
+
+*.bmp
+*.jpg
+*.dm3
+*.JPG
+*.un~
