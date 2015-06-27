@@ -61,3 +61,5 @@ target/
 *.dm3
 *.JPG
 *.un~
+
+gui/*.py
