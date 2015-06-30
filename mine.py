@@ -27,17 +27,10 @@ def gkern(kernlen=21, nsig=3):
     return kernel
 
 def saveImage(name, matrix = None, format = "BMP", image = None):
-    print " -> Saving Image " + name + " ...",
-    if image is not None:
-        pass
-    elif matrix is not None:
-        image =  Image.fromarray(matrix)
-    else:
-        raise ValueError("matrix or image must be specified")
+    fileName = QtGui.QFileDialog.getSaveFileName(self, "Choose File", self.ui.fileEdit.text(),
+                                "Bitmap (*.bmp)")
 
-    image.save("dst/" + name + "." + format.lower(), format)
-    print "DONE"
-    return image
+    image.save(fileName, "BMP")
 
 
 #######################################
@@ -76,16 +69,20 @@ print "DONE"
 
 
 print "Gaussian Filter ... ",
-gaussianMatrix = emptyGreyscaleMatrix*0
-kernelSize = 7
-matrix = gkern(kernelSize)
-for i in range(size[1] - (kernelSize - 1)):
-    for j in range(size[0] - (kernelSize - 1)):
-        iS = i + (kernelSize - 1)/2
-        jS = j + (kernelSize - 1)/2
-        #print t[i:(i + kernelSize), j:(j + kernelSize)]
-        gaussianMatrix[iS, jS] = np.sum(np.multiply(orgGreyscaleMatrix[i:(i + kernelSize), j:(j + kernelSize)], matrix))
-        #s[iS, jS] = np.sum(t[i:(i + kernelSize), j:(j + kernelSize)],)/kernelSize**2
+
+def applyGaussianFilter(imgMatrix, kernelSize = 7):
+    gaussianMatrix = MImage.pil_to_array(Image.new('L', imgMatrix.shape, 0))
+    matrix = gkern(kernelSize)
+    for i in range(size[1] - (kernelSize - 1)):
+        for j in range(size[0] - (kernelSize - 1)):
+            iS = i + (kernelSize - 1)/2
+            jS = j + (kernelSize - 1)/2
+            #print t[i:(i + kernelSize), j:(j + kernelSize)]
+            gaussianMatrix[iS, jS] = np.sum(np.multiply(imgMatrix[i:(i + kernelSize), j:(j + kernelSize)], matrix))
+            #s[iS, jS] = np.sum(t[i:(i + kernelSize), j:(j + kernelSize)],)/kernelSize**2
+    return gaussianMatrix
+
+gaussianMatrix = applyGaussianFilter(orgGreyscaleMatrix)
 
 print "DONE"
 
