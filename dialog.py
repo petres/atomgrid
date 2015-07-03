@@ -26,6 +26,8 @@ class BaseDialog(QtGui.QDialog):
         #self.connect(self.ui.gaussFilterButton, QtCore.SIGNAL("clicked()"), self._gaussFilter)
         self.connect(self.ui.saveFileButton, QtCore.SIGNAL("clicked()"), self._saveFile)
 
+        self.connect(self.ui.graphicsView, QtCore.SIGNAL("wheel(QWheelEvent)"), self._wheel);
+
         self.ui.gaussFilterButton.setEnabled(False)
         self.ui.saveFileButton.setEnabled(False)
 
@@ -33,6 +35,9 @@ class BaseDialog(QtGui.QDialog):
         self.ui.graphicsView.setScene(self.scene)
         self.pixmapItem = None
         self.image = None
+
+    def _wheel(self):
+        h.warn("WHEEL")
 
     def _openFile(self):
         fileName = QtGui.QFileDialog.getOpenFileName(self, "OpenImage", "src", "Bitmaps (*.bmp)")
