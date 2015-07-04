@@ -36,6 +36,8 @@ class BaseDialog(QtGui.QDialog):
         self.pixmapItem = None
         self.image = None
 
+        self.model = QtGui.QStandardItemModel(self.ui.imageListView)
+
     def _wheel(self):
         h.warn("WHEEL")
 
@@ -53,6 +55,13 @@ class BaseDialog(QtGui.QDialog):
         self.pixmapItem = QtGui.QPixmap(fileName)
         item = QtGui.QGraphicsPixmapItem(self.pixmapItem)
         self.scene.addItem(item)
+
+        item = QtGui.QStandardItem(os.path.basename(str(fileName)))
+        item.setCheckable(True)
+
+        self.model.appendRow(item)
+        self.ui.imageListView.setModel(self.model)
+
 
         self._checkButtons()
 
