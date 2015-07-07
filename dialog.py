@@ -26,7 +26,9 @@ class BaseDialog(QtGui.QDialog):
         #self.connect(self.ui.gaussFilterButton, QtCore.SIGNAL("clicked()"), self._gaussFilter)
         self.connect(self.ui.saveFileButton, QtCore.SIGNAL("clicked()"), self._saveFile)
 
-        self.connect(self.ui.graphicsView, QtCore.SIGNAL("wheel(QWheelEvent)"), self._wheel);
+        #self.connect(self.ui.imageListView, QtCore.SIGNAL("activated()"), self._imageActivated);
+
+        self.ui.imageListView.clicked.connect(self._imageActivated)
 
         self.ui.gaussFilterButton.setEnabled(False)
         self.ui.saveFileButton.setEnabled(False)
@@ -38,8 +40,11 @@ class BaseDialog(QtGui.QDialog):
 
         self.model = QtGui.QStandardItemModel(self.ui.imageListView)
 
-    def _wheel(self):
-        h.warn("WHEEL")
+    def _imageActivated(self, index):
+        item = self.model.itemFromIndex(index)
+        item = QtGui.QGraphicsPixmapItem(item.pixmap)
+        self.scene.addItem(item)
+
 
     def _openFile(self):
         fileName = QtGui.QFileDialog.getOpenFileName(self, "OpenImage", "src", "Bitmaps (*.bmp)")
@@ -48,16 +53,21 @@ class BaseDialog(QtGui.QDialog):
             h.warn("No file selected.")
             return
 
-        orgImg = Image.open(str(fileName), mode='r').convert()
-        self.image = MImage.pil_to_array(orgImg.convert('L'))
+        
+        #self.image = 
 
         h.log("Loaded!")
-        self.pixmapItem = QtGui.QPixmap(fileName)
-        item = QtGui.QGraphicsPixmapItem(self.pixmapItem)
-        self.scene.addItem(item)
+        #self.pixmapItem = QtGui.QPixmap(fileName)
+        #item = QtGui.QGraphicsPixmapItem(self.pixmapItem)
+        #self.scene.addItem(item)
 
         item = QtGui.QStandardItem(os.path.basename(str(fileName)))
-        item.setCheckable(True)
+        item.imageFileName = str(fileName)
+        orgImg = Image.open(str(fileName), mode='r').convert()
+        item.image = MImage.pil_to_array(orgImg.convert('L'))
+        item.pixmap = QtGui.QPixmap(fileName)
+
+        #item.setCheckable(True)
 
         self.model.appendRow(item)
         self.ui.imageListView.setModel(self.model)
