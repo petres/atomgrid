@@ -27,10 +27,17 @@ def gkern(kernlen=21, nsig=3):
     return kernel
 
 def saveImage(name, matrix = None, format = "BMP", image = None):
-    fileName = QtGui.QFileDialog.getSaveFileName(self, "Choose File", self.ui.fileEdit.text(),
-                                "Bitmap (*.bmp)")
+    print " -> Saving Image " + name + " ...",
+    if image is not None:
+        pass
+    elif matrix is not None:
+        image =  Image.fromarray(matrix)
+    else:
+        raise ValueError("matrix or image must be specified")
 
-    image.save(fileName, "BMP")
+    image.save("dst/" + name + "." + format.lower(), format)
+    print "DONE"
+    return image
 
 
 #######################################

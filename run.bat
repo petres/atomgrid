@@ -2,5 +2,5 @@
 set OLDDIR=%CD%
 cd %~p0
 call cfg\config.bat
-call %%python%% dialog.py %*
+call %%python%% .\dialog.py %*
 cd %OLDDIR%
